@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prospecção — Girafa</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f3;--s:#fff;--b:#e2e0d8;--bs:#c8c5bb;
+  --t:#1a1916;--tm:#6b6860;--tf:#9c9a94;
+  --g:#0f6e56;--gb:#e1f5ee;
+  --a:#854f0b;--ab:#faeeda;
+  --bl:#185fa5;--blb:#e6f1fb;
+  --r:#a32d2d;--rb:#fcebeb;
+  --ra:10px;--rs:6px
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* Header */
+header{background:var(--s);border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:54px;position:sticky;top:0;z-index:100}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.logo span{color:var(--tm);font-weight:400}
+.htabs{display:flex;gap:2px}
+.ht{padding:6px 14px;font-size:13px;border:none;background:none;cursor:pointer;border-radius:var(--rs);color:var(--tm);font-family:inherit;transition:all .1s}
+.ht.on{background:var(--bg);color:var(--t);font-weight:600}
+.ht:hover:not(.on){background:var(--bg)}
+
+/* Layout */
+.wrap{max-width:840px;margin:0 auto;padding:2rem 1.5rem}
+.pg{display:none}.pg.on{display:block}
+
+/* Steps */
+.steps{display:flex;align-items:center;margin-bottom:1.75rem}
+.si{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--tf);white-space:nowrap}
+.si.on{color:var(--t)}.si.done{color:var(--g)}
+.snum{width:24px;height:24px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.si.done .snum{background:var(--g);border-color:var(--g);color:#fff}
+.si.on .snum{background:var(--t);border-color:var(--t);color:#fff}
+.sc{flex:1;height:1px;background:var(--b);margin:0 12px}
+
+/* Cards */
+.card{background:var(--s);border:1px solid var(--b);border-radius:var(--ra);padding:1.5rem;margin-bottom:1rem}
+.ct{font-size:14px;font-weight:700;margin-bottom:.75rem}
+.csub{font-size:13px;color:var(--tm);margin-bottom:.75rem;margin-top:-.4rem}
+
+/* Form */
+label{font-size:11px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;margin-top:14px}
+label:first-of-type{margin-top:0}
+input,textarea{width:100%;font-family:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--b);border-radius:var(--rs);background:var(--bg);color:var(--t);outline:none;transition:border-color .15s}
+input:focus,textarea:focus{border-color:var(--bs);background:var(--s)}
+textarea{resize:vertical;line-height:1.55}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;font-size:13px;font-weight:600;font-family:inherit;border-radius:var(--rs);border:1px solid var(--bs);background:var(--s);color:var(--t);cursor:pointer;transition:all .12s}
+.btn:hover{background:var(--bg)}.btn:active{transform:scale(.98)}
+.bp{background:var(--t);color:#fff;border-color:var(--t)}.bp:hover{opacity:.85;background:var(--t)}
+.bsm{padding:5px 12px;font-size:12px}
+.bd{color:var(--r);border-color:#f0bbbb}.bd:hover{background:var(--rb)}
+.bg2{color:var(--g);border-color:#9fe1cb}.bg2:hover{background:var(--gb)}
+
+/* Textareas */
+.big-ta{min-height:150px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.6}
+.tmpl-ta{min-height:200px;font-size:13px;line-height:1.7}
+
+/* Progress */
+.pbar{height:4px;background:var(--b);border-radius:99px;overflow:hidden;display:none;margin:12px 0}
+.pfill{height:100%;background:var(--t);border-radius:99px;width:0%;transition:width .4s}
+
+/* Badges */
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px}
+.bnew{background:var(--ab);color:var(--a)}
+.bsent{background:var(--blb);color:var(--bl)}
+.brep{background:var(--gb);color:var(--g)}
+.bdone{background:var(--b);color:var(--tm)}
+
+/* Company list */
+.clist{display:flex;flex-direction:column;gap:8px}
+.cc{background:var(--s);border:1px solid var(--b);border-radius:var(--ra);overflow:hidden}
+.ch{padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;cursor:pointer;gap:12px;transition:background .1s}
+.ch:hover{background:#fafaf8}
+.ci{flex:1;min-width:0}
+.cn{font-size:15px;font-weight:700}
+.csm{font-size:12px;color:var(--tm);margin-top:2px}
+.cr{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.sbar{display:flex;gap:3px}
+.sd{width:26px;height:4px;border-radius:99px;background:var(--b)}
+.sd.dn{background:var(--g)}.sd.nx{background:var(--a)}
+.cb{border-top:1px solid var(--b);padding:16px;display:none}
+.cb.op{display:block}
+
+/* Email blocks */
+.eb{background:var(--bg);border:1px solid var(--b);border-radius:var(--rs);margin-bottom:10px;overflow:hidden}
+.ebh{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--b);flex-wrap:wrap;gap:6px}
+.ebl{font-size:12px;font-weight:700;color:var(--tm)}
+.ebl.cur{color:var(--a)}.ebl.dk{color:var(--g)}
+.ebc{padding:12px 14px;font-size:13px;line-height:1.7;white-space:pre-wrap;color:var(--t);max-height:200px;overflow-y:auto}
+
+/* Stats */
+.empty{text-align:center;padding:3rem;color:var(--tm);font-size:14px}
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem}
+.stat{background:var(--s);border:1px solid var(--b);border-radius:var(--ra);padding:14px;text-align:center}
+.stn{font-size:22px;font-weight:700}
+.stl{font-size:11px;color:var(--tm);margin-top:2px;text-transform:uppercase;letter-spacing:.4px}
+
+/* Modal */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:1.5rem}
+.mbg.op{display:flex}
+.modal{background:var(--s);border:1px solid var(--b);border-radius:var(--ra);padding:1.5rem;width:100%;max-width:540px;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.15)}
+.mt{font-size:16px;font-weight:700;margin-bottom:.3rem}
+.mf{display:flex;justify-content:flex-end;gap:8px;margin-top:1rem;flex-wrap:wrap}
+
+/* Filters */
+.fbar{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.fb{padding:5px 13px;font-size:12px;border:1px solid var(--b);background:var(--s);border-radius:99px;cursor:pointer;font-family:inherit;color:var(--tm);transition:all .1s}
+.fb.on{background:var(--t);color:#fff;border-color:var(--t)}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+
+/* Template tabs */
+.ttabs{display:flex;gap:2px;border-bottom:1px solid var(--b);margin-bottom:1rem}
+.tt{padding:7px 15px;font-size:13px;border:none;background:none;cursor:pointer;font-family:inherit;color:var(--tm);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .1s}
+.tt.on{color:var(--t);border-bottom-color:var(--t);font-weight:600}
+
+/* Marker pills */
+.mp{display:inline-block;background:var(--ab);color:var(--a);font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;margin:2px;cursor:pointer;border:1px solid #f5c466;transition:background .1s}
+.mp:hover{background:#f5c466}
+
+.tip{font-size:12px;color:var(--tm);background:var(--bg);border:1px solid var(--b);border-radius:var(--rs);padding:10px 12px;margin-top:8px;line-height:1.5}
+
+/* Mode toggle */
+.tog{display:flex;background:var(--bg);border:1px solid var(--b);border-radius:var(--rs);padding:3px;gap:2px}
+.tb{padding:6px 14px;font-size:13px;border:none;background:none;cursor:pointer;border-radius:4px;font-family:inherit;color:var(--tm);transition:all .1s}
+.tb.on{background:var(--s);color:var(--t);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+@media(max-width:620px){
+  .r2{grid-template-columns:1fr}
+  .srow{grid-template-columns:1fr 1fr}
+  header{padding:0 1rem}
+  .wrap{padding:1.25rem 1rem}
+  .ht{padding:5px 10px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Girafa <span>/ Prospecção</span></div>
+  <div class="htabs">
+    <button class="ht on" onclick="pg('gerar')">Gerar emails</button>
+    <button class="ht" onclick="pg('lista')">Lista</button>
+    <button class="ht" onclick="pg('templates')">Templates</button>
+    <button class="ht" onclick="pg('config')">Config</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ===== GERAR ===== -->
+<div id="pg-gerar" class="pg on">
+  <div class="steps">
+    <div class="si on" id="si1"><div class="snum">1</div><span>Contatos</span></div>
+    <div class="sc"></div>
+    <div class="si" id="si2"><div class="snum">2</div><span>Revisar e gerar</span></div>
+    <div class="sc"></div>
+    <div class="si" id="si3"><div class="snum">3</div><span>Salvo</span></div>
+  </div>
+
+  <!-- Step 1 -->
+  <div id="s1">
+    <div class="card">
+      <div class="ct">Dados do evento</div>
+      <div class="r2">
+        <div>
+          <label>Nome do evento</label>
+          <input id="ev-name" placeholder="FEICON 2026, APAS Show, Celebra Show..."/>
+        </div>
+        <div>
+          <label>Segmento</label>
+          <input id="ev-seg" placeholder="Construção, alimentação, beleza..."/>
+        </div>
+      </div>
+      <label>Data aproximada</label>
+      <input id="ev-date" placeholder="Agosto 2026"/>
+    </div>
+
+    <div class="card">
+      <div class="ct">Lista de contatos</div>
+      <div class="csub">Um contato por linha — separe os campos com | ou ;</div>
+      <textarea class="big-ta" id="contacts-raw" placeholder="Empresa ABC | contato@abc.com.br | Ana Souza
+Empresa XYZ | marketing@xyz.com
+Distribuidora Silva | joao@silva.com | João Silva — Diretor
+..."></textarea>
+      <div class="tip">
+        O email pode estar em qualquer posição da linha.<br>
+        Primeiro campo sem @ = nome da empresa &nbsp;·&nbsp; Segundo campo sem @ = representante (opcional).
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:.5rem">
+      <button class="btn bp" onclick="goS2()">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="s2" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px">
+        <div>
+          <div class="ct" style="margin-bottom:2px">Modo de geração</div>
+          <div style="font-size:12px;color:var(--tm)" id="s2sub"></div>
+        </div>
+        <div class="tog">
+          <button class="tb on" id="mb1" onclick="setMode('tmpl')">Usar template</button>
+          <button class="tb" id="mb2" onclick="setMode('ai')">Gerar com IA</button>
+        </div>
+      </div>
+
+      <div id="info-tmpl">
+        <div class="tip">Os templates da aba <strong>Templates</strong> serão usados. <strong>[NOME DA EMPRESA]</strong> e <strong>[REPRESENTANTE]</strong> são substituídos automaticamente para cada contato. Rápido — sem chamar a IA.</div>
+      </div>
+      <div id="info-ai" style="display:none">
+        <label>Ângulo da abordagem (opcional)</label>
+        <textarea id="ev-angle" placeholder="Ex: mostrar o stand para quem não foi, stories antes/durante/depois do evento..." rows="2"></textarea>
+        <div class="tip">A IA cria os 4 emails personalizados para cada empresa. Mais lento, mas mais variado.</div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap">
+        <button class="btn" onclick="goS1()">← Voltar</button>
+        <button class="btn bp" id="btn-gen" onclick="startGen()">⚡ Gerar todos</button>
+        <span id="gen-st" style="font-size:13px;color:var(--tm)"></span>
+      </div>
+      <div class="pbar" id="pbar"><div class="pfill" id="pfill"></div></div>
+    </div>
+
+    <div class="clist" id="prev-list"></div>
+
+    <div id="save-bar" style="display:none;justify-content:flex-end;margin-top:1rem">
+      <button class="btn bp" onclick="saveToList()">Salvar na lista →</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div id="s3" style="display:none">
+    <div class="card" style="text-align:center;padding:2.5rem">
+      <div style="font-size:36px;margin-bottom:12px">✓</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px"><span id="saved-n">0</span> empresas salvas na lista</div>
+      <p style="font-size:13px;color:var(--tm);margin-bottom:1.5rem">Abra cada empresa, copie o email e marque como enviado quando disparar.</p>
+      <button class="btn bp" onclick="pg('lista')">Ver lista →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LISTA ===== -->
+<div id="pg-lista" class="pg">
+  <div class="topbar">
+    <div style="font-size:18px;font-weight:700">Empresas prospectadas</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn bsm" onclick="exportCSV()">Exportar CSV</button>
+      <button class="btn bsm bd" onclick="clearAll()">Limpar tudo</button>
+    </div>
+  </div>
+  <div class="srow">
+    <div class="stat"><div class="stn" id="st-total">0</div><div class="stl">Total</div></div>
+    <div class="stat"><div class="stn" id="st-new" style="color:var(--a)">0</div><div class="stl">Novos</div></div>
+    <div class="stat"><div class="stn" id="st-sent" style="color:var(--bl)">0</div><div class="stl">Contatados</div></div>
+    <div class="stat"><div class="stn" id="st-rep" style="color:var(--g)">0</div><div class="stl">Responderam</div></div>
+  </div>
+  <div class="fbar">
+    <button class="fb on" onclick="setF('all',this)">Todos</button>
+    <button class="fb" onclick="setF('new',this)">Novos</button>
+    <button class="fb" onclick="setF('sent',this)">Em progresso</button>
+    <button class="fb" onclick="setF('replied',this)">Responderam</button>
+    <button class="fb" onclick="setF('done',this)">Concluídos</button>
+  </div>
+  <div class="clist" id="main-list">
+    <div class="empty">Nenhuma empresa ainda. Gere emails na aba "Gerar emails".</div>
+  </div>
+</div>
+
+<!-- ===== TEMPLATES ===== -->
+<div id="pg-templates" class="pg">
+  <div class="card">
+    <div class="ct">Templates de email</div>
+    <div class="csub">Escreva uma vez, aplica para todas as empresas da lista.</div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Inserir marcador no cursor</div>
+      <span class="mp" onclick="insM('[NOME DA EMPRESA]')">[NOME DA EMPRESA]</span>
+      <span class="mp" onclick="insM('[REPRESENTANTE]')">[REPRESENTANTE]</span>
+      <span class="mp" onclick="insM('[EVENTO]')">[EVENTO]</span>
+      <span class="mp" onclick="insM('[SEU NOME]')">[SEU NOME]</span>
+      <span class="mp" onclick="insM('[SEU HANDLE]')">[SEU HANDLE]</span>
+    </div>
+
+    <div class="ttabs">
+      <button class="tt on" onclick="swT(0,this)">Email inicial</button>
+      <button class="tt" onclick="swT(1,this)">Follow-up 1</button>
+      <button class="tt" onclick="swT(2,this)">Follow-up 2</button>
+      <button class="tt" onclick="swT(3,this)">Final</button>
+    </div>
+
+    <div id="tmpl-hint" style="font-size:11px;color:var(--tm);margin-bottom:6px"></div>
+    <textarea class="tmpl-ta" id="tmpl-ed" oninput="saveTmpl()"></textarea>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px">
+      <span id="tmpl-ok" style="font-size:12px;color:var(--g)"></span>
+      <button class="btn bsm" onclick="resetTmpl()">Restaurar padrão</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Prévia — dados de exemplo</div>
+    <div id="tmpl-prev" style="font-size:13px;line-height:1.7;white-space:pre-wrap;background:var(--bg);border-radius:var(--rs);padding:14px;color:var(--t)"></div>
+  </div>
+</div>
+
+<!-- ===== CONFIG ===== -->
+<div id="pg-config" class="pg">
+  <div class="card">
+    <div class="ct">Suas informações</div>
+    <label>Seu nome e título</label>
+    <input id="cfg-name" placeholder="Mariany — Storymaker B2B"/>
+    <label>Handle / link</label>
+    <input id="cfg-handle" placeholder="@marianymaker"/>
+    <label>Proposta de valor (1 linha)</label>
+    <input id="cfg-value" placeholder="cobertura de eventos com presença contínua sem esforço"/>
+    <label>Email de contato</label>
+    <input type="email" id="cfg-email" placeholder="mariany@girafa.com"/>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:12px;align-items:center">
+      <span id="cfg-ok" style="font-size:12px;color:var(--g);display:none">✓ Salvo</span>
+      <button class="btn bp" onclick="saveCfg()">Salvar configuração</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Sequência de follow-up</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px"><div style="width:28px;height:28px;border-radius:50%;background:var(--t);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">0</div><div><strong>Email inicial</strong> — apresentação e proposta</div></div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px"><div style="width:28px;height:28px;border-radius:50%;background:var(--bs);color:var(--t);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</div><div><strong>Follow-up 1</strong> — retomada leve (dia 3)</div></div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px"><div style="width:28px;height:28px;border-radius:50%;background:var(--bs);color:var(--t);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">7</div><div><strong>Follow-up 2</strong> — ângulo diferente (dia 7)</div></div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:13px"><div style="width:28px;height:28px;border-radius:50%;background:var(--bs);color:var(--t);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">14</div><div><strong>Follow-up final</strong> — encerramento elegante (dia 14)</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ===== MODAL ===== -->
+<div class="mbg" id="modal">
+  <div class="modal">
+    <div class="mt" id="m-title"></div>
+    <div style="font-size:12px;color:var(--tm);margin-bottom:10px" id="m-sub"></div>
+    <textarea id="m-body" style="width:100%;min-height:260px;font-size:13px;line-height:1.7;font-family:inherit;border:1px solid var(--b);border-radius:var(--rs);padding:12px;background:var(--bg);color:var(--t);resize:vertical;outline:none" oninput="syncEdit()"></textarea>
+    <div class="mf">
+      <button class="btn bsm" onclick="closeM()">Fechar</button>
+      <button class="btn bsm" id="m-copy" onclick="copyM()">Copiar</button>
+      <button class="btn bsm bg2" onclick="markSentM()">✓ Marcar enviado</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SL = ['Email inicial','Follow-up 1 (dia 3)','Follow-up 2 (dia 7)','Follow-up final (dia 14)'];
+const HINTS = ['Primeira abordagem — apresentação e proposta','Dia 3 sem resposta — retomada leve','Dia 7 — ângulo diferente, reforça valor','Dia 14 — encerramento elegante'];
+
+const DEFT = [
+`Assunto: Cobertura do [EVENTO] — [NOME DA EMPRESA]
+
+Olá[REPRESENTANTE],
+
+Vi o trabalho da [NOME DA EMPRESA] e queria entrar em contato antes do [EVENTO].
+
+Sou [SEU NOME], storymaker especializada em cobertura de eventos corporativos. Crio conteúdo de stories e reels que mostra o evento para quem não foi — gerando presença digital contínua para a marca.
+
+Você tem interesse em conversar sobre a cobertura do [EVENTO]?
+
+[SEU NOME]
+[SEU HANDLE]`,
+
+`Assunto: Re: Cobertura do [EVENTO] — ainda faz sentido?
+
+Olá[REPRESENTANTE],
+
+Mandei um email há alguns dias sobre cobertura do [EVENTO] para a [NOME DA EMPRESA], mas sei que a caixa de entrada fica cheia.
+
+Se fizer sentido ter presença digital forte durante o evento, posso explicar como funciona em 15 minutos.
+
+Tem espaço essa semana?
+
+[SEU NOME]`,
+
+`Assunto: [NOME DA EMPRESA] no [EVENTO] — uma ideia rápida
+
+Olá[REPRESENTANTE],
+
+Terceiro contato — prometo que é o penúltimo.
+
+Uma pergunta direta: a [NOME DA EMPRESA] costuma usar o [EVENTO] para gerar conteúdo para redes sociais, ou o foco é só a presença no stand?
+
+Muitas empresas perdem a oportunidade de transformar o evento em conteúdo que funciona por semanas depois. É exatamente isso que faço.
+
+Se quiser ver exemplos, é só responder aqui.
+
+[SEU NOME]
+[SEU HANDLE]`,
+
+`Assunto: Encerrando por agora — [NOME DA EMPRESA]
+
+Olá[REPRESENTANTE],
+
+Esta é minha última mensagem sobre o [EVENTO].
+
+Tentei contato algumas vezes e entendo que talvez não seja o momento. Se precisar de cobertura de stories em algum evento futuro, pode me acionar pelo [SEU HANDLE].
+
+Abraço,
+[SEU NOME]`
+];
+
+// State
+let cos = [], pend = [], genBatch = [], filt = 'all', ti = 0, mode = 'tmpl', mI = null, mSI = null;
+let cfg = { name: 'Mariany — Storymaker B2B', handle: '@marianymaker', value: 'cobertura de eventos corporativos com presença contínua', email: '' };
+let tmpls = DEFT.slice();
+
+// Persist
+function persist()   { try { localStorage.setItem('g_co',  JSON.stringify(cos));   } catch(e){} }
+function persistCfg(){ try { localStorage.setItem('g_cfg', JSON.stringify(cfg));   } catch(e){} }
+function persistTpl(){ try { localStorage.setItem('g_tpl', JSON.stringify(tmpls)); } catch(e){} }
+function load() {
+  try {
+    const c = localStorage.getItem('g_co');  if(c) cos   = JSON.parse(c);
+    const f = localStorage.getItem('g_cfg'); if(f) cfg   = Object.assign({}, cfg, JSON.parse(f));
+    const t = localStorage.getItem('g_tpl'); if(t) tmpls = JSON.parse(t);
+  } catch(e) {}
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Pages
+function pg(n) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.getElementById('pg-'+n).classList.add('on');
+  document.querySelectorAll('.ht').forEach(t => t.classList.remove('on'));
+  const m = { gerar:0, lista:1, templates:2, config:3 };
+  document.querySelectorAll('.ht')[m[n]].classList.add('on');
+  if(n==='lista')    renderList();
+  if(n==='config')   loadCfg();
+  if(n==='templates') initTmpl();
+}
+
+// Config
+function saveCfg() {
+  cfg.name   = document.getElementById('cfg-name').value   || cfg.name;
+  cfg.handle = document.getElementById('cfg-handle').value || cfg.handle;
+  cfg.value  = document.getElementById('cfg-value').value  || cfg.value;
+  cfg.email  = document.getElementById('cfg-email').value  || cfg.email;
+  persistCfg();
+  const el = document.getElementById('cfg-ok'); el.style.display='inline';
+  setTimeout(()=>el.style.display='none', 2000);
+}
+function loadCfg() {
+  document.getElementById('cfg-name').value   = cfg.name;
+  document.getElementById('cfg-handle').value = cfg.handle;
+  document.getElementById('cfg-value').value  = cfg.value;
+  document.getElementById('cfg-email').value  = cfg.email;
+}
+
+// Templates
+function initTmpl() { swT(ti, document.querySelectorAll('.tt')[ti]); }
+function swT(i, btn) {
+  ti = i;
+  document.querySelectorAll('.tt').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('tmpl-hint').textContent = HINTS[i];
+  document.getElementById('tmpl-ed').value = tmpls[i];
+  updPrev();
+}
+function saveTmpl() {
+  tmpls[ti] = document.getElementById('tmpl-ed').value;
+  persistTpl();
+  const el = document.getElementById('tmpl-ok'); el.textContent='✓ Salvo automaticamente';
+  setTimeout(()=>el.textContent='', 1500);
+  updPrev();
+}
+function updPrev() {
+  document.getElementById('tmpl-prev').textContent = applyM(tmpls[ti], 'Empresa Exemplo Ltda', 'Ana Souza', 'Evento X 2026');
+}
+function applyM(tpl, co, rep, ev) {
+  const nm = cfg.name.split('—')[0].trim() || 'Mariany';
+  return tpl
+    .replace(/\[NOME DA EMPRESA\]/g, co   || 'empresa')
+    .replace(/\[REPRESENTANTE\]/g,   rep  ? ' '+rep : '')
+    .replace(/\[EVENTO\]/g,          ev   || 'evento')
+    .replace(/\[SEU NOME\]/g,        nm)
+    .replace(/\[SEU HANDLE\]/g,      cfg.handle || '@marianymaker');
+}
+function insM(m) {
+  const ta = document.getElementById('tmpl-ed');
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.slice(0,s) + m + ta.value.slice(e);
+  ta.selectionStart = ta.selectionEnd = s + m.length;
+  ta.focus(); saveTmpl();
+}
+function resetTmpl() {
+  if(!confirm('Restaurar templates padrão? Seus textos serão perdidos.')) return;
+  tmpls = DEFT.slice(); persistTpl(); initTmpl();
+}
+
+// Steps
+function setSI(n) {
+  for(let i=1;i<=3;i++){
+    const el = document.getElementById('si'+i);
+    el.classList.remove('on','done');
+    if(i<n)      el.classList.add('done');
+    else if(i===n) el.classList.add('on');
+  }
+}
+
+// Parse contacts
+function parseC(raw) {
+  return raw.trim().split('\n').map(line => {
+    if(!line.trim()) return null;
+    let parts;
+    if(line.includes('|') || line.includes(';')) {
+      parts = line.split(/[|;]/).map(p=>p.trim()).filter(Boolean);
+    } else {
+      parts = line.split(',').map(p=>p.trim()).filter(Boolean);
+    }
+    const em = parts.find(p => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p));
+    const oth = parts.filter(p => p !== em);
+    return { name: oth[0]||'', email: em||'', contact: oth[1]||'' };
+  }).filter(c => c && c.email);
+}
+
+function goS1() {
+  document.getElementById('s1').style.display = 'block';
+  document.getElementById('s2').style.display = 'none';
+  document.getElementById('s3').style.display = 'none';
+  setSI(1);
+}
+function setMode(m) {
+  mode = m;
+  document.getElementById('mb1').classList.toggle('on', m==='tmpl');
+  document.getElementById('mb2').classList.toggle('on', m==='ai');
+  document.getElementById('info-tmpl').style.display = m==='tmpl' ? 'block' : 'none';
+  document.getElementById('info-ai').style.display   = m==='ai'   ? 'block' : 'none';
+}
+function goS2() {
+  const evName = document.getElementById('ev-name').value.trim();
+  const raw    = document.getElementById('contacts-raw').value.trim();
+  if(!evName) { alert('Preencha o nome do evento.'); return; }
+  if(!raw)    { alert('Adicione pelo menos um contato.'); return; }
+  const parsed = parseC(raw);
+  if(parsed.length === 0) { alert('Nenhum email válido encontrado.\nVerifique que cada linha tem um @ no formato nome@dominio.com'); return; }
+  pend = parsed;
+  document.getElementById('s2sub').textContent = parsed.length + ' empresa' + (parsed.length>1?'s':'') + ' · ' + evName;
+  document.getElementById('s1').style.display      = 'none';
+  document.getElementById('s2').style.display      = 'block';
+  document.getElementById('s3').style.display      = 'none';
+  document.getElementById('prev-list').innerHTML    = '';
+  document.getElementById('save-bar').style.display = 'none';
+  document.getElementById('btn-gen').style.display  = 'inline-flex';
+  document.getElementById('gen-st').textContent     = '';
+  document.getElementById('pbar').style.display     = 'none';
+  document.getElementById('pfill').style.width      = '0%';
+  setSI(2); setMode('tmpl');
+}
+
+// Generation
+async function startGen() {
+  document.getElementById('btn-gen').style.display = 'none';
+  document.getElementById('pbar').style.display    = 'block';
+  genBatch = [];
+  const evName  = document.getElementById('ev-name').value.trim();
+  const evSeg   = document.getElementById('ev-seg').value.trim();
+  const evDate  = document.getElementById('ev-date').value.trim();
+  const evAngle = (document.getElementById('ev-angle')||{}).value || '';
+  const total   = pend.length;
+  const list    = document.getElementById('prev-list');
+  list.innerHTML = '';
+
+  for(let i=0; i<total; i++) {
+    const c = pend[i];
+    document.getElementById('gen-st').textContent   = 'Gerando ' + (i+1) + ' / ' + total + '…';
+    document.getElementById('pfill').style.width    = (i/total*100) + '%';
+
+    const card = document.createElement('div');
+    card.className = 'cc'; card.id = 'gc'+i;
+    card.innerHTML = `<div class="ch" style="cursor:default">
+      <div class="ci">
+        <div class="cn">${esc(c.name||c.email)}</div>
+        <div class="csm">${esc(c.email)}${c.contact?' · '+esc(c.contact):''}</div>
+      </div>
+      <span class="badge bnew" id="gb${i}">gerando…</span>
+    </div>`;
+    list.appendChild(card);
+
+    let emails = [];
+    try {
+      if(mode === 'tmpl') {
+        emails = tmpls.map(t => applyM(t, c.name, c.contact, evName));
+      } else {
+        emails = await genAI(c, evName, evSeg, evDate, evAngle);
+      }
+      genBatch.push({...c, emails, status:'new', steps:[false,false,false,false], addedAt:Date.now(), event:evName});
+      document.getElementById('gb'+i).className = 'badge brep';
+      document.getElementById('gb'+i).textContent = '✓ pronto';
+      card.innerHTML += `<div class="cb op">
+        <div class="eb"><div class="ebh"><span class="ebl cur">Email inicial</span></div><div class="ebc">${esc(emails[0]||'')}</div></div>
+        ${emails.slice(1).map((e,si)=>`<div class="eb"><div class="ebh"><span class="ebl">${SL[si+1]}</span></div>
+        <div class="ebc" style="max-height:60px;overflow:hidden;mask-image:linear-gradient(to bottom,black 20%,transparent 100%)">${esc(e)}</div></div>`).join('')}
+      </div>`;
+    } catch(err) {
+      genBatch.push({...c, emails:['Erro ao gerar.','','',''], status:'new', steps:[false,false,false,false], addedAt:Date.now(), event:evName});
+      document.getElementById('gb'+i).className = 'badge bd';
+      document.getElementById('gb'+i).textContent = 'erro';
+      card.innerHTML += `<div class="cb op"><div style="font-size:12px;color:var(--r);padding:8px 0">Erro: ${esc(err.message)}</div></div>`;
+    }
+  }
+
+  document.getElementById('pfill').style.width   = '100%';
+  document.getElementById('gen-st').textContent  = '✓ ' + total + ' empresa' + (total>1?'s':'') + ' geradas';
+  document.getElementById('save-bar').style.display = 'flex';
+}
+
+async function genAI(c, evName, evSeg, evDate, evAngle) {
+  const prompt = `Você é copywriter B2B especialista em prospecção para eventos corporativos.
+
+Gere 4 emails de prospecção. Separe cada email EXATAMENTE com: ---EMAIL---
+
+Remetente: ${cfg.name} (${cfg.handle})
+Proposta: ${cfg.value}
+Empresa alvo: ${c.name||'empresa'}
+Contato: ${c.contact||'não informado'}
+Evento: ${evName}
+Segmento: ${evSeg||'não informado'}
+Data: ${evDate||'em breve'}
+Ângulo: ${evAngle||'geral'}
+
+Sequência:
+1. Email inicial de prospecção
+2. Follow-up dia 3 sem resposta
+3. Follow-up dia 7 com ângulo diferente
+4. Encerramento elegante dia 14
+
+Regras: tom humano e direto, máx 4 parágrafos, sem emojis, cada email começa com "Assunto:", CTA claro ao final. Responda APENAS os 4 emails separados por ---EMAIL--- sem nenhum texto adicional antes ou depois.`;
+
+  const res = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  if(!res.ok) throw new Error('Erro do servidor: ' + res.status);
+  const data = await res.json();
+  if(data.error) throw new Error(data.error);
+  const parts = data.text.split('---EMAIL---').map(p=>p.trim()).filter(Boolean);
+  if(parts.length === 0) throw new Error('Resposta vazia da IA');
+  return parts.slice(0, 4);
+}
+
+function saveToList() {
+  cos = cos.concat(genBatch);
+  persist();
+  document.getElementById('saved-n').textContent  = genBatch.length;
+  document.getElementById('s2').style.display     = 'none';
+  document.getElementById('s3').style.display     = 'block';
+  setSI(3); pend = []; genBatch = [];
+}
+
+// List
+function renderList() {
+  const list = document.getElementById('main-list');
+  document.getElementById('st-total').textContent = cos.length;
+  document.getElementById('st-new').textContent   = cos.filter(c=>c.status==='new').length;
+  document.getElementById('st-sent').textContent  = cos.filter(c=>c.status==='sent').length;
+  document.getElementById('st-rep').textContent   = cos.filter(c=>c.status==='replied').length;
+
+  let fil = cos;
+  if(filt==='done')     fil = cos.filter(c=>c.steps.every(Boolean));
+  else if(filt!=='all') fil = cos.filter(c=>c.status===filt && !c.steps.every(Boolean));
+
+  if(fil.length === 0) {
+    list.innerHTML = '<div class="empty">'+(cos.length===0?'Nenhuma empresa ainda. Gere emails na aba "Gerar emails".':'Nenhuma empresa neste filtro.')+'</div>';
+    return;
+  }
+
+  list.innerHTML = fil.map(c => {
+    const i   = cos.indexOf(c);
+    const ns  = c.steps.findIndex(s=>!s);
+    const done = ns === -1;
+    const sb  = done ? 'bdone">concluído' : c.status==='replied' ? 'brep">respondeu' : c.status==='sent' ? 'bsent">em progresso' : 'bnew">novo';
+    const dots = c.steps.map((d,si)=>`<div class="sd ${d?'dn':si===ns?'nx':''}"></div>`).join('');
+    const ebs  = (c.emails||[]).map((e,si)=>{
+      const id=c.steps[si], ic=si===ns;
+      return `<div class="eb"><div class="ebh">
+        <span class="ebl ${id?'dk':ic?'cur':''}">${id?'✓ ':''}${SL[si]}</span>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <button class="btn bsm" onclick="openM(${i},${si})">Ver / Editar</button>
+          <button class="btn bsm" onclick="copyAt(${i},${si})">Copiar</button>
+          ${!id&&ic?`<button class="btn bsm bg2" onclick="markStep(${i},${si})">✓ Enviado</button>`:''}
+        </div>
+      </div></div>`;
+    }).join('');
+    return `<div class="cc">
+      <div class="ch" onclick="togCard(${i})">
+        <div class="ci">
+          <div class="cn">${esc(c.name||c.email)}</div>
+          <div class="csm">${esc(c.email)}${c.contact?' · '+esc(c.contact):''}${c.event?' · '+esc(c.event):''}</div>
+        </div>
+        <div class="cr"><div class="sbar">${dots}</div><span class="badge ${sb}</span></div>
+      </div>
+      <div class="cb" id="cb${i}">
+        ${ebs}
+        <div style="display:flex;gap:6px;padding-top:8px;flex-wrap:wrap">
+          ${!done&&c.status!=='replied'?`<button class="btn bsm bg2" onclick="markRep(${i})">Respondeu</button>`:''}
+          <button class="btn bsm bd" onclick="remC(${i})">Remover</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togCard(i)     { const b=document.getElementById('cb'+i); if(b) b.classList.toggle('op'); }
+function markStep(i,si) { cos[i].steps[si]=true; if(si===0) cos[i].status='sent'; persist(); renderList(); }
+function markRep(i)     { cos[i].status='replied'; persist(); renderList(); }
+function remC(i)        { if(!confirm('Remover '+(cos[i].name||cos[i].email)+'?'))return; cos.splice(i,1); persist(); renderList(); }
+function setF(f,btn)    { filt=f; document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderList(); }
+function clearAll()     { if(!confirm('Apagar todas as empresas?'))return; cos=[]; persist(); renderList(); }
+
+// Modal
+function openM(i,si) {
+  mI=i; mSI=si;
+  document.getElementById('m-title').textContent = SL[si] + ' — ' + (cos[i].name||cos[i].email);
+  document.getElementById('m-sub').textContent   = cos[i].email;
+  document.getElementById('m-body').value        = cos[i].emails?.[si] || '';
+  document.getElementById('modal').classList.add('op');
+}
+function syncEdit() { if(mI!==null&&mSI!==null) { cos[mI].emails[mSI]=document.getElementById('m-body').value; persist(); } }
+function closeM()   { document.getElementById('modal').classList.remove('op'); }
+function copyM()    {
+  navigator.clipboard.writeText(document.getElementById('m-body').value).then(()=>{
+    const b=document.getElementById('m-copy'); b.textContent='✓ Copiado';
+    setTimeout(()=>b.textContent='Copiar', 1500);
+  });
+}
+function markSentM() { if(mI!==null&&mSI!==null) { markStep(mI,mSI); closeM(); } }
+function copyAt(i,si){ navigator.clipboard.writeText(cos[i].emails?.[si]||''); }
+
+// Export CSV
+function exportCSV() {
+  const rows = [['Empresa','Email','Contato','Evento','Status','Inicial','Follow1','Follow2','Final']];
+  cos.forEach(c => rows.push([c.name,c.email,c.contact,c.event,c.status,...c.steps.map(s=>s?'enviado':'pendente')]));
+  const csv = rows.map(r=>r.map(f=>`"${(f||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='prospeccao-girafa.csv'; a.click();
+}
+
+document.getElementById('modal').addEventListener('click', function(e){ if(e.target===this) closeM(); });
+
+// Init
+load();
+renderList();
+</script>
+</body>
+</html>
