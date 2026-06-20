@@ -1,0 +1,12 @@
+{
+  "name": "girafa-prospeccao",
+  "version": "1.0.0",
+  "description": "Gerador de emails de prospecção B2B — Girafa",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
