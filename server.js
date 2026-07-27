@@ -1,8 +1,9 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/api/generate', async (req, res) => {
   const { prompt } = req.body;
@@ -25,7 +26,6 @@ app.post('/api/generate', async (req, res) => {
         messages: [{ role: 'user', content: prompt }]
       })
     });
-
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
     const text = (data.content || []).map(b => b.text || '').join('');
@@ -35,5 +35,9 @@ app.post('/api/generate', async (req, res) => {
   }
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Servidor rodando na porta ' + PORT));
+app.listen(PORT, '0.0.0.0', () => console.log('Servidor rodando na porta ' + PORT));
